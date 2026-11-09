@@ -109,7 +109,7 @@ export default function App() {
     }, 2400);
   };
 
-  // Open product modal with default selections
+  // Open product modal with default selections & browser history state for mobile back gesture
   const openProductModal = (product) => {
     setModalProduct(product);
     setSelectedDrink(DRINK_UPGRADES[0]);
@@ -117,11 +117,38 @@ export default function App() {
     setSelectedExtras([]);
     setItemNote("");
     setModalQty(1);
+    try {
+      window.history.pushState({ aioModal: true }, "");
+    } catch {}
   };
 
   const closeProductModal = () => {
     setModalProduct(null);
+    try {
+      if (window.history.state?.aioModal) {
+        window.history.back();
+      }
+    } catch {}
   };
+
+  // Close modal on browser back gesture/button or Escape key
+  useEffect(() => {
+    if (!modalProduct) return;
+    const handlePopState = () => {
+      setModalProduct(null);
+    };
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") {
+        closeProductModal();
+      }
+    };
+    window.addEventListener("popstate", handlePopState);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [modalProduct]);
 
   const toggleExtraAddon = (addon) => {
     setSelectedExtras((prev) => {
@@ -395,14 +422,14 @@ export default function App() {
                 setActivePage("menu");
                 window.scrollTo({ top: 0, behavior: "smooth" });
               }}
-              className={`h-10 sm:h-11 px-3 sm:px-4 rounded-2xl text-xs sm:text-sm font-bold font-heading transition-all cursor-pointer flex items-center gap-1.5 border ${
+              className={`h-10 sm:h-11 px-3 sm:px-4 rounded-2xl text-xs sm:text-sm font-bold font-heading transition-all cursor-pointer flex items-center gap-1.5 border shadow-2xs ${
                 activePage === "menu"
-                  ? "bg-[#F8F2F4] text-[#4A1525] border-[#4A1525]/30"
-                  : "bg-white text-stone-700 border-stone-200 hover:bg-stone-100"
+                  ? "bg-[#F8F2F4] text-[#4A1525] border-[#4A1525]/30 font-black"
+                  : "bg-[#4A1525] text-white border-[#4A1525] hover:bg-[#360F1B] font-extrabold animate-pulse"
               }`}
             >
-              <span>🍽️</span>
-              <span>{t.navMenu}</span>
+              <span>{activePage === "cart" ? "←" : "🍽️"}</span>
+              <span>{activePage === "cart" ? t.backToMenu : t.navMenu}</span>
             </button>
 
             {/* Language Selector (TR / EN) */}
@@ -497,7 +524,7 @@ export default function App() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder={t.searchPlaceholder}
-                  className="w-full h-11 pl-10 pr-20 bg-[#FAF8F5] border border-[#E6E0D5] focus:bg-white focus:border-[#4A1525] rounded-2xl text-xs sm:text-sm font-medium text-stone-900 placeholder:text-stone-400 focus:outline-none transition-all shadow-2xs"
+                  className="w-full h-11 pl-10 pr-20 bg-[#FAF8F5] border border-[#E6E0D5] focus:bg-white focus:border-[#4A1525] rounded-2xl text-base sm:text-sm font-medium text-stone-900 placeholder:text-stone-400 focus:outline-none transition-all shadow-2xs"
                 />
                 <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-400 text-sm">
                   🔍
@@ -871,10 +898,14 @@ export default function App() {
               <div>
                 <button
                   type="button"
-                  onClick={() => setActivePage("menu")}
-                  className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-[#4A1525] hover:underline cursor-pointer mb-1.5"
+                  onClick={() => {
+                    setActivePage("menu");
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                  }}
+                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#FAF8F5] hover:bg-[#F8F2F4] active:bg-[#eedbe0] border-2 border-[#4A1525]/30 text-[#4A1525] text-xs sm:text-sm font-black cursor-pointer transition-all shadow-2xs mb-3"
                 >
-                  {t.backToMenu}
+                  <span className="text-base font-black">←</span>
+                  <span>{t.backToMenuAddMore}</span>
                 </button>
                 <h1 className="text-xl sm:text-2xl font-black font-heading text-[#1B1815]">
                   🛒 {t.cartPageTitle}
@@ -1033,6 +1064,22 @@ export default function App() {
                         );
                       })}
                     </div>
+
+                    {/* Dedicated "Add More Items from Menu" Button */}
+                    <div className="pt-3 border-t border-stone-100">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setActivePage("menu");
+                          window.scrollTo({ top: 0, behavior: "smooth" });
+                        }}
+                        className="w-full py-3.5 px-4 rounded-2xl border-2 border-dashed border-[#4A1525]/30 hover:border-[#4A1525] bg-[#FAF8F5] hover:bg-[#F8F2F4] active:bg-[#eedbe0] text-[#4A1525] font-black text-xs sm:text-sm flex items-center justify-center gap-2 transition-all cursor-pointer shadow-2xs active:scale-[0.99]"
+                      >
+                        <span className="text-base">🍽️</span>
+                        <span>{t.addMoreFromMenu}</span>
+                        <span className="text-base font-black">→</span>
+                      </button>
+                    </div>
                   </div>
 
                   {/* Quick Upsell Box in Cart (Extra Fries & Drinks) */}
@@ -1080,7 +1127,15 @@ export default function App() {
 
                 {/* RIGHT COLUMN: Customer Info & WhatsApp Order Confirmation */}
                 <div className="space-y-4">
-                  <div className="bg-white border-2 border-[#4A1525]/20 rounded-2xl p-5 sm:p-6 space-y-4 shadow-sm">
+                  <form
+                    id="order-checkout-form"
+                    autoComplete="on"
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      handleSendWhatsApp();
+                    }}
+                    className="bg-white border-2 border-[#4A1525]/20 rounded-2xl p-5 sm:p-6 space-y-4 shadow-sm"
+                  >
                     <div className="border-b border-stone-100 pb-3">
                       <h2 className="text-base sm:text-lg font-black font-heading text-[#4A1525] flex items-center gap-2">
                         <span>📍</span>
@@ -1091,43 +1146,55 @@ export default function App() {
                       </p>
                     </div>
 
-                    {/* Full Name Input */}
+                    {/* Full Name Input (Mobile Autofill Enabled) */}
                     <div className="space-y-1.5">
-                      <label className="block text-xs font-extrabold text-[#1B1815]">
+                      <label htmlFor="customer-name" className="block text-xs font-extrabold text-[#1B1815]">
                         {t.fullNameLabel}
                       </label>
                       <input
+                        id="customer-name"
+                        name="name"
                         type="text"
+                        autoComplete="name"
+                        inputMode="text"
                         value={customerName}
                         onChange={(e) => {
                           setCustomerName(e.target.value);
                           if (showValidationAlert) setShowValidationAlert(false);
                         }}
                         placeholder={t.fullNamePlaceholder}
-                        className="w-full h-11 px-3.5 rounded-xl bg-[#FAF8F5] border border-[#E6E0D5] focus:bg-white focus:border-[#4A1525] text-sm font-medium text-[#1B1815] focus:outline-none"
+                        className="w-full h-12 px-3.5 rounded-xl bg-[#FAF8F5] border border-[#E6E0D5] focus:bg-white focus:border-[#4A1525] text-base font-medium text-[#1B1815] focus:outline-none transition-colors"
+                        required
                       />
                     </div>
 
-                    {/* Phone Input */}
+                    {/* Phone Input (Mobile Autofill Enabled) */}
                     <div className="space-y-1.5">
-                      <label className="block text-xs font-extrabold text-[#1B1815]">
+                      <label htmlFor="customer-phone" className="block text-xs font-extrabold text-[#1B1815]">
                         {t.phoneLabel}
                       </label>
                       <input
+                        id="customer-phone"
+                        name="tel"
                         type="tel"
+                        autoComplete="tel"
+                        inputMode="tel"
                         value={customerPhone}
                         onChange={(e) => setCustomerPhone(e.target.value)}
                         placeholder={t.phonePlaceholder}
-                        className="w-full h-11 px-3.5 rounded-xl bg-[#FAF8F5] border border-[#E6E0D5] focus:bg-white focus:border-[#4A1525] text-sm font-medium text-[#1B1815] focus:outline-none"
+                        className="w-full h-12 px-3.5 rounded-xl bg-[#FAF8F5] border border-[#E6E0D5] focus:bg-white focus:border-[#4A1525] text-base font-medium text-[#1B1815] focus:outline-none transition-colors"
                       />
                     </div>
 
-                    {/* Address Textarea */}
+                    {/* Address Textarea (Mobile Autofill Enabled) */}
                     <div className="space-y-1.5">
-                      <label className="block text-xs font-extrabold text-[#1B1815]">
+                      <label htmlFor="customer-address" className="block text-xs font-extrabold text-[#1B1815]">
                         {t.addressLabel}
                       </label>
                       <textarea
+                        id="customer-address"
+                        name="street-address"
+                        autoComplete="street-address"
                         rows={3}
                         value={customerAddress}
                         onChange={(e) => {
@@ -1135,21 +1202,25 @@ export default function App() {
                           if (showValidationAlert) setShowValidationAlert(false);
                         }}
                         placeholder={t.addressPlaceholder}
-                        className="w-full p-3.5 rounded-xl bg-[#FAF8F5] border border-[#E6E0D5] focus:bg-white focus:border-[#4A1525] text-sm font-medium text-[#1B1815] focus:outline-none resize-none"
+                        className="w-full p-3.5 rounded-xl bg-[#FAF8F5] border border-[#E6E0D5] focus:bg-white focus:border-[#4A1525] text-base font-medium text-[#1B1815] focus:outline-none resize-none transition-colors"
+                        required
                       />
                     </div>
 
                     {/* Optional Order Note */}
                     <div className="space-y-1.5">
-                      <label className="block text-xs font-extrabold text-[#1B1815]">
+                      <label htmlFor="customer-order-note" className="block text-xs font-extrabold text-[#1B1815]">
                         {t.orderNoteLabel}
                       </label>
                       <input
+                        id="customer-order-note"
+                        name="order-notes"
                         type="text"
+                        autoComplete="off"
                         value={orderNote}
                         onChange={(e) => setOrderNote(e.target.value)}
                         placeholder={t.orderNotePlaceholder}
-                        className="w-full h-11 px-3.5 rounded-xl bg-[#FAF8F5] border border-[#E6E0D5] focus:bg-white focus:border-[#4A1525] text-sm font-medium text-[#1B1815] focus:outline-none"
+                        className="w-full h-12 px-3.5 rounded-xl bg-[#FAF8F5] border border-[#E6E0D5] focus:bg-white focus:border-[#4A1525] text-base font-medium text-[#1B1815] focus:outline-none transition-colors"
                       />
                     </div>
 
@@ -1177,8 +1248,7 @@ export default function App() {
 
                     {/* WhatsApp Confirm CTA */}
                     <button
-                      type="button"
-                      onClick={handleSendWhatsApp}
+                      type="submit"
                       className={`w-full h-14 px-5 rounded-2xl font-extrabold font-heading text-sm sm:text-base flex items-center justify-between transition-all cursor-pointer shadow-lg ${
                         isFormValid
                           ? "bg-[#059669] hover:bg-[#047857] text-white shadow-emerald-700/20"
@@ -1192,6 +1262,19 @@ export default function App() {
                       <span className="px-3 py-1 rounded-xl bg-black/15 text-white font-mono text-sm font-black">
                         ₺{totalCartAmount}
                       </span>
+                    </button>
+
+                    {/* Secondary Back to Menu Action right inside checkout */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setActivePage("menu");
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+                      }}
+                      className="w-full py-3 px-4 rounded-xl border border-[#4A1525]/20 hover:bg-stone-100 text-[#4A1525] font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-colors cursor-pointer"
+                    >
+                      <span>←</span>
+                      <span>{t.backToMenu}</span>
                     </button>
 
                     <p className="text-[11px] text-center text-[#5C5349]">
@@ -1216,7 +1299,7 @@ export default function App() {
                         {buildWhatsAppMessage()}
                       </pre>
                     </div>
-                  </div>
+                  </form>
                 </div>
               </div>
             )}
@@ -1279,8 +1362,34 @@ export default function App() {
             className="aio-modal-sheet"
             onClick={(e) => e.stopPropagation()}
           >
+            {/* Persistent Sticky Top Header: Stays fixed at the top of the modal sheet */}
+            <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-md px-3.5 sm:px-5 py-3 border-b border-stone-200 flex items-center justify-between shadow-2xs shrink-0">
+              <button
+                type="button"
+                onClick={closeProductModal}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#FAF8F5] hover:bg-[#F8F2F4] active:bg-[#eedbe0] border border-[#4A1525]/20 text-[#4A1525] text-xs sm:text-sm font-black cursor-pointer transition-colors"
+                aria-label={t.modalTopBack}
+              >
+                <span className="text-base font-black">←</span>
+                <span>{t.modalTopBack}</span>
+              </button>
+
+              <div className="text-xs font-bold text-stone-600 uppercase tracking-wider truncate max-w-[140px] xs:max-w-[200px] sm:max-w-xs text-center font-heading">
+                {modalProduct.name[lang]}
+              </div>
+
+              <button
+                type="button"
+                onClick={closeProductModal}
+                className="w-8 h-8 rounded-xl bg-stone-100 hover:bg-rose-100 text-stone-700 hover:text-rose-700 flex items-center justify-center text-sm font-black cursor-pointer transition-colors"
+                aria-label="Kapat"
+              >
+                ✕
+              </button>
+            </div>
+
             {/* Modal Image Header */}
-            <div className="relative h-48 sm:h-56 bg-[#2C0D16] shrink-0 overflow-hidden">
+            <div className="relative h-44 sm:h-52 bg-[#2C0D16] shrink-0 overflow-hidden">
               <img
                 src={modalProduct.image}
                 alt={modalProduct.name[lang]}
@@ -1288,19 +1397,9 @@ export default function App() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
 
-              {/* Close Button (Large & Accessible 44px+ touch target) */}
-              <button
-                type="button"
-                onClick={closeProductModal}
-                className="absolute top-3.5 right-3.5 w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-black/65 hover:bg-black/90 active:scale-95 text-white flex items-center justify-center text-lg font-black cursor-pointer border border-white/25 shadow-lg transition-all"
-                aria-label="Kapat / Close"
-              >
-                ✕
-              </button>
-
               {/* Top Popular Pill if any */}
               {modalProduct.popular && (
-                <div className="absolute top-3.5 left-4">
+                <div className="absolute top-3 left-3">
                   <span className="px-3 py-1 rounded-full bg-[#4A1525] text-white text-xs font-black uppercase tracking-wider shadow-md border border-white/20">
                     ⭐ {t.popularBadge}
                   </span>
@@ -1574,7 +1673,7 @@ export default function App() {
                   value={itemNote}
                   onChange={(e) => setItemNote(e.target.value)}
                   placeholder={t.modalNotePlaceholder}
-                  className="w-full p-3.5 rounded-2xl bg-[#FAF8F5] border-2 border-stone-200 focus:bg-white focus:border-[#4A1525] text-sm text-stone-900 placeholder:text-stone-400 focus:outline-none transition-all resize-none shadow-2xs"
+                  className="w-full p-3.5 rounded-2xl bg-[#FAF8F5] border-2 border-stone-200 focus:bg-white focus:border-[#4A1525] text-base sm:text-sm text-stone-900 placeholder:text-stone-400 focus:outline-none transition-all resize-none shadow-2xs"
                 />
               </div>
 
@@ -1618,54 +1717,66 @@ export default function App() {
               </div>
             </div>
 
-            {/* Modal Sticky Footer (Large Quantity Buttons + Big Accessible Add to Cart CTA) */}
-            <div className="p-3 sm:p-4 bg-white border-t border-stone-200 flex items-center gap-3 shrink-0 shadow-lg">
-              {/* Quantity Selector with 44px+ touch targets */}
-              <div className="flex items-center bg-stone-100 p-1 rounded-2xl border border-stone-200/90 shrink-0">
+            {/* Modal Sticky Footer (Large Quantity Buttons + Big Accessible Add to Cart CTA + Cancel to Menu) */}
+            <div className="p-3 sm:p-4 bg-white border-t border-stone-200 space-y-2.5 shrink-0 shadow-lg">
+              <div className="flex items-center gap-2.5">
+                {/* Quantity Selector with 44px+ touch targets */}
+                <div className="flex items-center bg-stone-100 p-1 rounded-2xl border border-stone-200/90 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => setModalQty((q) => Math.max(1, q - 1))}
+                    className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl bg-white text-stone-900 font-black text-lg flex items-center justify-center shadow-xs hover:bg-stone-50 active:scale-95 transition-all cursor-pointer"
+                    aria-label="Adet Azalt"
+                  >
+                    −
+                  </button>
+                  <span className="w-9 text-center text-base font-black font-mono text-stone-900 select-none">
+                    {modalQty}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setModalQty((q) => q + 1)}
+                    className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl bg-white text-stone-900 font-black text-lg flex items-center justify-center shadow-xs hover:bg-stone-50 active:scale-95 transition-all cursor-pointer"
+                    aria-label="Adet Artır"
+                  >
+                    +
+                  </button>
+                </div>
+
+                {/* Big, High-Contrast Add to Cart Button */}
                 <button
                   type="button"
-                  onClick={() => setModalQty((q) => Math.max(1, q - 1))}
-                  className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl bg-white text-stone-900 font-black text-lg flex items-center justify-center shadow-xs hover:bg-stone-50 active:scale-95 transition-all cursor-pointer"
-                  aria-label="Adet Azalt"
+                  onClick={() => {
+                    handleAddToCart(
+                      modalProduct,
+                      selectedDrink,
+                      selectedFries,
+                      selectedExtras,
+                      itemNote,
+                      modalQty
+                    );
+                    closeProductModal();
+                  }}
+                  className="flex-1 h-13 sm:h-14 min-h-[52px] px-4 sm:px-6 bg-[#4A1525] hover:bg-[#360F1B] active:bg-[#2C0D16] active:scale-[0.99] text-white rounded-2xl font-black font-heading text-sm sm:text-base flex items-center justify-between shadow-lg shadow-[#4A1525]/20 cursor-pointer transition-all min-w-0"
                 >
-                  −
-                </button>
-                <span className="w-10 text-center text-base font-black font-mono text-stone-900 select-none">
-                  {modalQty}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => setModalQty((q) => q + 1)}
-                  className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl bg-white text-stone-900 font-black text-lg flex items-center justify-center shadow-xs hover:bg-stone-50 active:scale-95 transition-all cursor-pointer"
-                  aria-label="Adet Artır"
-                >
-                  +
+                  <span className="flex items-center gap-2 truncate">
+                    <span className="text-lg">🛒</span>
+                    <span className="truncate">{t.addToCartBtn}</span>
+                  </span>
+                  <span className="px-2.5 sm:px-3 py-1.5 rounded-xl bg-white text-[#4A1525] font-mono font-black text-sm sm:text-base shadow-xs shrink-0 ml-2">
+                    ₺{modalUnitPrice * modalQty}
+                  </span>
                 </button>
               </div>
 
-              {/* Big, High-Contrast Add to Cart Button */}
+              {/* Clear Secondary Action: Return to Menu Without Ordering */}
               <button
                 type="button"
-                onClick={() => {
-                  handleAddToCart(
-                    modalProduct,
-                    selectedDrink,
-                    selectedFries,
-                    selectedExtras,
-                    itemNote,
-                    modalQty
-                  );
-                  closeProductModal();
-                }}
-                className="flex-1 h-13 sm:h-14 min-h-[52px] px-5 sm:px-6 bg-[#4A1525] hover:bg-[#360F1B] active:bg-[#2C0D16] active:scale-[0.99] text-white rounded-2xl font-black font-heading text-sm sm:text-base flex items-center justify-between shadow-lg shadow-[#4A1525]/20 cursor-pointer transition-all min-w-0"
+                onClick={closeProductModal}
+                className="w-full py-2.5 rounded-xl text-xs sm:text-sm font-extrabold text-stone-600 hover:text-[#4A1525] hover:bg-[#F8F2F4] active:bg-[#eedbe0] transition-colors cursor-pointer text-center flex items-center justify-center gap-1.5 border border-stone-200"
               >
-                <span className="flex items-center gap-2 truncate">
-                  <span className="text-lg">🛒</span>
-                  <span className="truncate">{t.addToCartBtn}</span>
-                </span>
-                <span className="px-3 py-1.5 rounded-xl bg-white text-[#4A1525] font-mono font-black text-sm sm:text-base shadow-xs shrink-0 ml-2">
-                  ₺{modalUnitPrice * modalQty}
-                </span>
+                <span>←</span>
+                <span>{t.cancelReturnToMenu}</span>
               </button>
             </div>
           </div>
