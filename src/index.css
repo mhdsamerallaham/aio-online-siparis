@@ -489,14 +489,16 @@ body {
 /* Cart Page Layout */
 .aio-cart-grid {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 24px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 20px;
+  width: 100%;
 }
 
 @media (min-width: 960px) {
   .aio-cart-grid {
-    grid-template-columns: 1.15fr 0.85fr;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
     align-items: start;
+    gap: 24px;
   }
 }
 

@@ -78,8 +78,8 @@ export const DRINK_UPGRADES = [
   {
     id: "drink-std-cola-250",
     name: {
-      tr: "Standart: Kola (250 ml Kutu)",
-      en: "Standard: Cola (250 ml Can)",
+      tr: "Kola (250 ml Kutu)",
+      en: "Cola (250 ml Can)",
     },
     desc: {
       tr: "Menüye dahil standart içecek",
@@ -92,8 +92,8 @@ export const DRINK_UPGRADES = [
   {
     id: "drink-upg-pepsi-330",
     name: {
-      tr: "Pepsi (330 ml Kutu) ile Değiştir",
-      en: "Upgrade to Pepsi (330 ml Can)",
+      tr: "Pepsi (330 ml Kutu)",
+      en: "Pepsi (330 ml Can)",
     },
     desc: {
       tr: "250 ml Kola yerine 330 ml Kutu Pepsi",
@@ -105,8 +105,8 @@ export const DRINK_UPGRADES = [
   {
     id: "drink-upg-sprite-330",
     name: {
-      tr: "Sprite (330 ml Kutu) ile Değiştir",
-      en: "Upgrade to Sprite (330 ml Can)",
+      tr: "Sprite (330 ml Kutu)",
+      en: "Sprite (330 ml Can)",
     },
     desc: {
       tr: "250 ml Kola yerine 330 ml Kutu Sprite",
@@ -118,8 +118,8 @@ export const DRINK_UPGRADES = [
   {
     id: "drink-upg-cocacola-330",
     name: {
-      tr: "Coca-Cola (330 ml Kutu) ile Değiştir",
-      en: "Upgrade to Coca-Cola (330 ml Can)",
+      tr: "Coca-Cola (330 ml Kutu)",
+      en: "Coca-Cola (330 ml Can)",
     },
     desc: {
       tr: "250 ml Kola yerine 330 ml Kutu Coca-Cola",
@@ -131,8 +131,8 @@ export const DRINK_UPGRADES = [
   {
     id: "drink-upg-zero-330",
     name: {
-      tr: "Coca-Cola Zero (330 ml Kutu) ile Değiştir",
-      en: "Upgrade to Coca-Cola Zero (330 ml Can)",
+      tr: "Coca-Cola Zero (330 ml Kutu)",
+      en: "Coca-Cola Zero (330 ml Can)",
     },
     desc: {
       tr: "250 ml Kola yerine 330 ml Kutu Zero Sugar",
@@ -148,8 +148,8 @@ export const FRIES_UPGRADES = [
   {
     id: "fries-std-150",
     name: {
-      tr: "Standart: Sade Patates Kızartması (150 g)",
-      en: "Standard: Classic French Fries (150 g)",
+      tr: "Sade Patates (150 g)",
+      en: "Classic Fries (150 g)",
     },
     desc: {
       tr: "Menüye dahil 150 g çıtır McCain patates",
@@ -162,8 +162,8 @@ export const FRIES_UPGRADES = [
   {
     id: "fries-upg-cheddar",
     name: {
-      tr: "Cheddarlı Patatese Yükselt (+40 g Cheddar)",
-      en: "Upgrade to Cheddar Cheese Fries (+40 g Cheddar)",
+      tr: "Cheddar Soslu Patates",
+      en: "Cheddar Cheese Fries",
     },
     desc: {
       tr: "Sade patates yerine +40 g eritilmiş sıcak Cheddar peynirli patates",
@@ -175,8 +175,8 @@ export const FRIES_UPGRADES = [
   {
     id: "fries-upg-parmesan",
     name: {
-      tr: "Parmesanlı Patatese Yükselt (+20 g Parmesan)",
-      en: "Upgrade to Parmesan & Herb Fries (+20 g Parmesan)",
+      tr: "Parmesanlı Patates",
+      en: "Parmesan & Herb Fries",
     },
     desc: {
       tr: "Sade patates yerine +20 g toz Parmesan ve sarımsaklı baharatlı patates",
@@ -188,8 +188,8 @@ export const FRIES_UPGRADES = [
   {
     id: "fries-upg-double-cheese",
     name: {
-      tr: "Cheddarlı & Parmesanlı Duble Patatese Yükselt",
-      en: "Upgrade to Double Cheese (Cheddar & Parmesan) Fries",
+      tr: "Duble Peynirli Patates",
+      en: "Double Cheese Fries",
     },
     desc: {
       tr: "Sade patates yerine +35 g eritilmiş Cheddar ve +15 g toz Parmesanlı patates",
@@ -201,8 +201,8 @@ export const FRIES_UPGRADES = [
   {
     id: "fries-upg-large-250",
     name: {
-      tr: "Büyük Boy Sade Patatese Yükselt (250 g)",
-      en: "Upgrade to Large Plain Fries (250 g)",
+      tr: "Büyük Boy Patates (250 g)",
+      en: "Large Fries (250 g)",
     },
     desc: {
       tr: "Menüdeki 150 g patatesi 250 g duble porsiyona büyüt (+100 g ekstra)",
@@ -218,8 +218,8 @@ export const EXTRA_ADDONS = [
   {
     id: "addon-plain-fries-150",
     name: {
-      tr: "Ekstra Sade Patates Porsiyonu (150 g)",
-      en: "Extra Classic French Fries Portion (150 g)",
+      tr: "Sade Patates (150 g)",
+      en: "Classic Fries (150 g)",
     },
     storePrice: 70,
     price: 75, // yuvarlanmış (0/5): 75 TL
@@ -227,8 +227,8 @@ export const EXTRA_ADDONS = [
   {
     id: "addon-large-fries-200",
     name: {
-      tr: "Ekstra Büyük Boy Sade Patates Porsiyonu (200 g)",
-      en: "Extra Large French Fries Portion (200 g)",
+      tr: "Büyük Boy Sade Patates (200 g)",
+      en: "Large Fries (200 g)",
     },
     storePrice: 85,
     price: 95, // yuvarlanmış (0/5): 95 TL
@@ -236,8 +236,8 @@ export const EXTRA_ADDONS = [
   {
     id: "addon-cheddar-fries",
     name: {
-      tr: "Ekstra Cheddarlı Patates Porsiyonu (150 g + 40 g Cheddar)",
-      en: "Extra Cheddar Cheese Fries Portion (150 g + 40 g Cheddar)",
+      tr: "Cheddarlı Patates (150 g + 40 g)",
+      en: "Cheddar Cheese Fries (150 g + 40 g)",
     },
     storePrice: 115,
     price: 125, // yuvarlanmış (0/5): 125 TL
@@ -245,8 +245,8 @@ export const EXTRA_ADDONS = [
   {
     id: "addon-parmesan-fries",
     name: {
-      tr: "Ekstra Parmesanlı Patates Porsiyonu (150 g + 20 g Parmesan)",
-      en: "Extra Parmesan & Herb Fries Portion (150 g + 20 g Parmesan)",
+      tr: "Parmesanlı Patates (150 g + 20 g)",
+      en: "Parmesan & Herb Fries (150 g + 20 g)",
     },
     storePrice: 125,
     price: 140, // yuvarlanmış (0/5): 140 TL
@@ -254,8 +254,8 @@ export const EXTRA_ADDONS = [
   {
     id: "addon-double-cheese-fries",
     name: {
-      tr: "Ekstra Cheddarlı & Parmesanlı Duble Patates Porsiyonu",
-      en: "Extra Cheddar & Parmesan Loaded Fries Portion",
+      tr: "Duble Peynirli Patates (Cheddar & Parmesan)",
+      en: "Double Cheese Loaded Fries",
     },
     storePrice: 145,
     price: 160, // yuvarlanmış (0/5): 160 TL
@@ -263,8 +263,8 @@ export const EXTRA_ADDONS = [
   {
     id: "addon-can-drink-330",
     name: {
-      tr: "Ekstra 330 ml Kutu İçecek (Pepsi / Sprite / Coca-Cola / Zero)",
-      en: "Extra 330 ml Canned Drink (Pepsi / Sprite / Coca-Cola / Zero)",
+      tr: "330 ml Kutu İçecek",
+      en: "330 ml Canned Drink",
     },
     storePrice: 60,
     price: 65, // yuvarlanmış (0/5): 65 TL
@@ -272,8 +272,8 @@ export const EXTRA_ADDONS = [
   {
     id: "addon-special-dip-30",
     name: {
-      tr: "Ekstra Özel Dip Sos (30 g — Burger / Acılı Mayonez / Sweet Chili)",
-      en: "Extra Signature Dip Sauce (30 g — Burger / Spicy Mayo / Sweet Chili)",
+      tr: "Özel Dip Sos (30 g)",
+      en: "Signature Dip Sauce (30 g)",
     },
     storePrice: 20,
     price: 20, // yuvarlanmış (0/5): 20 TL
@@ -281,8 +281,8 @@ export const EXTRA_ADDONS = [
   {
     id: "addon-truffle-dip-30",
     name: {
-      tr: "Ekstra Trüflü Mayonez Dip Sos (30 g)",
-      en: "Extra Truffle Mayonnaise Dip Sauce (30 g)",
+      tr: "Trüflü Mayonez Dip Sos (30 g)",
+      en: "Truffle Mayonnaise Dip (30 g)",
     },
     storePrice: 50,
     price: 55, // yuvarlanmış (0/5): 55 TL

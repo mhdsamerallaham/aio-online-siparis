@@ -963,17 +963,17 @@ export default function App() {
                         return (
                           <div
                             key={item.cartKey}
-                            className="p-3.5 sm:p-4 rounded-2xl border border-[#E6E0D5] bg-[#FAF8F5]/60 space-y-2.5"
+                            className="p-3.5 sm:p-4 rounded-2xl border border-[#E6E0D5] bg-[#FAF8F5]/60 space-y-2.5 overflow-hidden"
                           >
-                            <div className="flex items-start justify-between gap-3">
-                              <div className="flex items-start gap-3">
+                            <div className="flex items-start justify-between gap-3 min-w-0">
+                              <div className="flex items-start gap-3 min-w-0 flex-1">
                                 <img
                                   src={item.product.image}
                                   alt={item.product.name[lang]}
                                   className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl object-cover border border-[#E6E0D5] shrink-0"
                                 />
-                                <div>
-                                  <h3 className="text-sm sm:text-base font-extrabold font-heading text-[#1B1815]">
+                                <div className="min-w-0 flex-1">
+                                  <h3 className="text-sm sm:text-base font-extrabold font-heading text-[#1B1815] truncate">
                                     {item.product.name[lang]}
                                   </h3>
                                   <p className="text-xs font-bold text-[#4A1525] mt-0.5">
@@ -983,37 +983,38 @@ export default function App() {
                                     </span>
                                   </p>
 
-                                  {/* Selected Options Pills */}
-                                  <div className="flex flex-wrap gap-1.5 mt-2">
-                                    {item.drinkUpgrade && (
-                                      <span className="px-2 py-0.5 rounded-md bg-white border border-[#E6E0D5] text-[11px] font-semibold text-stone-700">
-                                        🥤 {item.drinkUpgrade.name[lang]}
-                                        {getPrice(item.drinkUpgrade) > 0
-                                          ? ` (+₺${getPrice(item.drinkUpgrade)})`
-                                          : ""}
-                                      </span>
-                                    )}
-                                    {item.friesUpgrade && (
-                                      <span className="px-2 py-0.5 rounded-md bg-white border border-[#E6E0D5] text-[11px] font-semibold text-stone-700">
-                                        🍟 {item.friesUpgrade.name[lang]}
-                                        {getPrice(item.friesUpgrade) > 0
-                                          ? ` (+₺${getPrice(item.friesUpgrade)})`
-                                          : ""}
-                                      </span>
-                                    )}
-                                    {item.extras &&
-                                      item.extras.map((ex) => (
-                                        <span
-                                          key={ex.id}
-                                          className="px-2 py-0.5 rounded-md bg-[#F8F2F4] border border-[#4A1525]/20 text-[11px] font-bold text-[#4A1525]"
-                                        >
-                                          + {ex.name[lang]} (+₺{getPrice(ex)})
+                                  {/* Selected Options Pills (Only show upgraded options & extras) */}
+                                  {(getPrice(item.drinkUpgrade) > 0 ||
+                                    getPrice(item.friesUpgrade) > 0 ||
+                                    (item.extras && item.extras.length > 0)) && (
+                                    <div className="flex flex-wrap gap-1.5 mt-2">
+                                      {item.drinkUpgrade && getPrice(item.drinkUpgrade) > 0 && (
+                                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-white border border-[#4A1525]/25 text-[11px] font-bold text-[#4A1525] shadow-2xs max-w-full">
+                                          <span>🥤</span>
+                                          <span className="truncate">{item.drinkUpgrade.name[lang]} (+₺{getPrice(item.drinkUpgrade)})</span>
                                         </span>
-                                      ))}
-                                  </div>
+                                      )}
+                                      {item.friesUpgrade && getPrice(item.friesUpgrade) > 0 && (
+                                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-white border border-[#4A1525]/25 text-[11px] font-bold text-[#4A1525] shadow-2xs max-w-full">
+                                          <span>🍟</span>
+                                          <span className="truncate">{item.friesUpgrade.name[lang]} (+₺{getPrice(item.friesUpgrade)})</span>
+                                        </span>
+                                      )}
+                                      {item.extras &&
+                                        item.extras.map((ex) => (
+                                          <span
+                                            key={ex.id}
+                                            className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-[#F8F2F4] border border-[#4A1525]/20 text-[11px] font-bold text-[#4A1525] shadow-2xs max-w-full"
+                                          >
+                                            <span>➕</span>
+                                            <span className="truncate">{ex.name[lang]} (+₺{getPrice(ex)})</span>
+                                          </span>
+                                        ))}
+                                    </div>
+                                  )}
 
                                   {item.note && (
-                                    <p className="text-[11px] text-amber-900 bg-amber-50 border border-amber-200/80 px-2.5 py-1 rounded-lg mt-2">
+                                    <p className="text-[11px] text-amber-900 bg-amber-50 border border-amber-200/80 px-2.5 py-1 rounded-lg mt-2 break-words">
                                       💬 {item.note}
                                     </p>
                                   )}
@@ -1095,7 +1096,7 @@ export default function App() {
                             key={sideProd.id}
                             className="p-2.5 rounded-xl border border-[#E6E0D5] flex items-center justify-between gap-2 bg-[#FAF8F5]/50"
                           >
-                            <div className="min-w-0">
+                            <div className="min-w-0 flex-1">
                               <div className="text-xs font-bold text-[#1B1815] truncate">
                                 {sideProd.name[lang]}
                               </div>
@@ -1115,7 +1116,7 @@ export default function App() {
                                   1
                                 )
                               }
-                              className="px-3 py-1.5 bg-[#4A1525] hover:bg-[#360F1B] text-white rounded-lg text-xs font-bold shrink-0 cursor-pointer"
+                              className="px-3 py-1.5 bg-[#4A1525] hover:bg-[#360F1B] active:bg-[#2C0D16] text-white rounded-lg text-xs font-bold shrink-0 cursor-pointer transition-colors"
                             >
                               + {lang === "tr" ? "Ekle" : "Add"}
                             </button>
